@@ -1,0 +1,39 @@
+$maxWidth: 1280; //ШИРИНА МАКЕТА
+
+@mixin adaptiv-font($pcSize, $mobSize) {
+    //pcSize - МАКЕТНЫЙ РАЗМЕР ШРИФТА //МИНИМАЛЬНЫЙ РАЗМЕР ШРИФТА
+    $addSize: $pcSize - $mobSize;
+    $maxWidth: $maxWidth - 320;
+    font-size: calc(#{$mobSize + px} + #{$addSize} * ((100vw - 320px) / #{$maxWidth}));
+}
+
+//========================================================СТИЛИ ШРИФТОВ========================================================
+
+@mixin font-param($size, $color, $weight, $line) {
+    font-size: $size;
+    color: $color;
+    font-weight: $weight;
+    line-height: $line;
+}
+
+//========================================================СТИЛИ ПСЕВДО-ЭЛЕМЕНТОВ========================================================
+
+@mixin before-after($top: initial, $left: initial, $right: initial, $bottom: initial, $width: 100%, $height: 100%) {
+    content: "";
+    position: absolute;
+    top: $top;
+    left: $left;
+    right: $right;
+    bottom: $bottom;
+    width: $width;
+    height: $height;
+}
+
+//========================================================СТИЛИ ФЛЕКСОВ========================================================
+
+@mixin flex($wrap: initial, $just: initial, $alig: initial) {
+    display: flex;
+    flex-wrap: $wrap;
+    justify-content: $just;
+    align-items: $alig;
+}
