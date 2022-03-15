@@ -5,14 +5,14 @@ document.addEventListener("DOMContentLoaded", function () {
 			this.id = this.constructor.id || (this.constructor.id = 1);
 			this.constructor.id++;
 			this.xmlns = "http://www.w3.org/2000/svg";
-			this.tension = options.tension * 1 || 0.4;
+			this.tension = options.tension * 1 || 0.5;
 			this.width = options.width * 1 || 500;
 			this.height = options.height * 1 || 500;
-			this.margin = options.margin || 100;
+			this.margin = options.margin || 15;
 			this.hoverFactor = options.hoverFactor || 0;
 			this.gap = options.gap || 50;
 			this.debug = options.debug || false;
-			this.forceFactor = options.forceFactor || 0.04;
+			this.forceFactor = options.forceFactor || 0.4;
 			this.color1 = options.color1 || "#36DFE7";
 			this.srcImage = options.imgSrc;
 			this.svg = svg;
@@ -55,8 +55,8 @@ document.addEventListener("DOMContentLoaded", function () {
 			this.touches = [];
 			this.noise = options.noise || 0;
 
-			this.svg.addEventListener("mousemove", this.mouseHandler);
-			this.svg.addEventListener("mouseout", this.clearHandler);
+			// this.svg.addEventListener("mousemove", this.mouseHandler);
+			// this.svg.addEventListener("mouseout", this.clearHandler);
 
 			// document.addEventListener("mousemove", this.mouseHandler);
 			// document.addEventListener("mousemove", this.clearHandler);
@@ -65,23 +65,19 @@ document.addEventListener("DOMContentLoaded", function () {
 			this.animate();
 		}
 
-		get mouseHandler() {
-			return (e) => {
-				this.touches = [
-					{
-						x: e.offsetX,
-						y: e.offsetY,
-						force: 1,
-					},
-				];
-				// console.log(this.touches[0].x, this.touches[0].y, this.svg.getBoundingClientRect().top);
-			};
+		mouseHandler(x, y) {
+			this.touches = [
+				{
+					x: x,
+					y: y,
+					force: 1,
+				},
+			];
+			// console.log(this.touches);
 		}
 
-		get clearHandler() {
-			return (e) => {
-				this.touches = [];
-			};
+		clearHandler() {
+			this.touches = [];
 		}
 
 		get raf() {
@@ -260,7 +256,6 @@ document.addEventListener("DOMContentLoaded", function () {
 			// 	points.push(this.createPoint(this.height - (Math.sin(angle) * this.height) / 2 + this.margin - this.height / 2, (Math.cos(angle) * this.height) / 2 + this.margin + this.height / 2));
 			// }
 			layer.points = points;
-			console.log(layer);
 		}
 	};
 
@@ -269,9 +264,28 @@ document.addEventListener("DOMContentLoaded", function () {
 	};
 
 	const buttons = document.getElementsByClassName("liquid-button");
+	const button = [];
+
 	for (let buttonIndex = 0; buttonIndex < buttons.length; buttonIndex++) {
-		const button = buttons[buttonIndex];
-		button.liquidButton = new LiquidButton(button);
-		console.log(button);
+		button.push(buttons[buttonIndex]);
+
+		button[buttonIndex].liquidButton = new LiquidButton(button[buttonIndex]);
+
+		// button[buttonIndex].liquidButton.svg.addEventListener("mousemove", button[buttonIndex].liquidButton.mouseHandler);
+		// button[buttonIndex].liquidButton.svg.addEventListener("mouseout", button[buttonIndex].liquidButton.clearHandler);
 	}
+
+	document.addEventListener("mousemove", function (e) {
+		button.forEach((element) => {
+			if (element.liquidButton.svg.getBoundingClientRect().top + pageYOffset - e.pageY < 100 && element.liquidButton.svg.getBoundingClientRect().top + pageYOffset - e.pageY > -(element.liquidButton.height + 100) && element.liquidButton.svg.getBoundingClientRect().left + pageXOffset - e.pageX < 100 && element.liquidButton.svg.getBoundingClientRect().left + pageXOffset - e.pageX > -(element.liquidButton.width + 100)) {
+				element.liquidButton.mouseHandler(
+					Math.abs(element.liquidButton.svg.getBoundingClientRect().left + pageXOffset - e.pageX) - 50,
+
+					Math.abs(element.liquidButton.svg.getBoundingClientRect().top + pageYOffset - e.pageY) - 50
+				);
+			} else {
+				element.liquidButton.clearHandler();
+			}
+		});
+	});
 });

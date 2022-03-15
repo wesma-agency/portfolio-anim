@@ -144,4 +144,11 @@ body.lock {
       visibility: visible; }
 
 .container {
-  text-align: center; }
+  text-align: center;
+  display: grid;
+  grid-template-columns: auto auto auto;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  gap: 50px;
+  padding: 50px 0; }
